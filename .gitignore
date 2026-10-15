@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.DS_Store
+build/
+dist/
+*.egg-info/
+.swiftpm/
+*.app/
+.env
+*.token
+config.json
+snapshot.json
+*.log
+.coverage

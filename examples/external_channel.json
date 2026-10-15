@@ -1,0 +1,6 @@
+{
+  "provider": "example-service", "account": "personal", "scope": "inbox",
+  "metric": "other", "display_name": "Example external", "collector": "external",
+  "enabled": false, "url": "https://example.org/inbox", "refresh_seconds": 180,
+  "settings": {"command": ["/absolute/path/to/trusted-executable"], "timeout_seconds": 12}
+}

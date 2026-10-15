@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notification-widget"
+version = "0.1.0"
+description = "Local read-only notification counters and a native macOS display"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+notification-widget = "notifydock.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["notifydock*"]

@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "channels": [
+    {
+      "provider": "webex", "account": "mac", "scope": "Webex Dock icon", "metric": "application_badge",
+      "display_name": "Webex", "collector": "dock_badge", "refresh_seconds": 60,
+      "enabled": false, "url": "https://web.webex.com/", "settings": {"app_name": "Webex"}
+    },
+    {
+      "provider": "slack", "account": "mac", "scope": "Slack Dock icon", "metric": "application_badge",
+      "display_name": "Slack", "collector": "dock_badge", "refresh_seconds": 60,
+      "enabled": false, "url": "https://app.slack.com/client/", "settings": {"app_name": "Slack"}
+    },
+    {
+      "provider": "outlook", "account": "work@example.com", "scope": "inbox", "metric": "unread_mail_items",
+      "display_name": "Outlook", "collector": "outlook", "refresh_seconds": 120, "enabled": false,
+      "url": "https://outlook.office.com/mail/inbox", "secret_ref": "oauth:outlook:work@example.com"
+    },
+    {
+      "provider": "gmail", "account": "me@gmail.com", "scope": "INBOX", "metric": "unread_messages",
+      "display_name": "Gmail", "collector": "gmail", "refresh_seconds": 120, "enabled": false,
+      "url": "https://mail.google.com/mail/u/0/#inbox", "secret_ref": "oauth:gmail:me@gmail.com"
+    },
+    {
+      "provider": "whatsapp", "account": "mac", "scope": "WhatsApp Dock icon", "metric": "application_badge",
+      "display_name": "WhatsApp", "collector": "dock_badge", "refresh_seconds": 60,
+      "enabled": false, "url": "https://web.whatsapp.com/", "settings": {"app_name": "WhatsApp"}
+    },
+    {
+      "provider": "discord", "account": "mac", "scope": "Discord Dock icon", "metric": "application_badge",
+      "display_name": "Discord", "collector": "dock_badge", "refresh_seconds": 60,
+      "enabled": false, "url": "https://discord.com/channels/@me", "settings": {"app_name": "Discord"}
+    },
+    {
+      "provider": "yahoo", "account": "me@yahoo.com", "scope": "INBOX", "metric": "unread_messages",
+      "display_name": "Yahoo Mail", "collector": "yahoo", "refresh_seconds": 180, "enabled": false,
+      "url": "https://mail.yahoo.com/", "secret_ref": "yahoo:me@yahoo.com"
+    },
+    {
+      "provider": "jira", "account": "work@example.com", "scope": "assigned-unresolved", "metric": "matching_jql_issues",
+      "display_name": "Jira Assigned", "collector": "jira", "refresh_seconds": 300,
+      "enabled": false, "url": "https://example.atlassian.net/jira/your-work",
+      "secret_ref": "jira:work@example.com",
+      "settings": {"site": "https://example.atlassian.net", "jql": "assignee = currentUser() AND resolution = Unresolved"}
+    },
+    {
+      "provider": "confluence", "account": "work@example.com", "scope": "notification inbox", "metric": "unread_notifications",
+      "display_name": "Confluence", "collector": "unsupported", "enabled": false,
+      "url": "https://example.atlassian.net/wiki/"
+    },
+    {
+      "provider": "github", "account": "personal", "scope": "all unread notification threads", "metric": "unread_notification_threads",
+      "display_name": "GitHub", "collector": "github", "refresh_seconds": 120, "enabled": false,
+      "url": "https://github.com/notifications", "secret_ref": "github:personal"
+    },
+    {
+      "provider": "slack", "account": "my-workspace", "scope": "DM:D0123456789", "metric": "unread_dm_messages",
+      "display_name": "Slack: one DM", "collector": "slack", "refresh_seconds": 180, "enabled": false,
+      "url": "https://app.slack.com/client/", "secret_ref": "slack:my-workspace",
+      "settings": {"channel_id": "D0123456789"}
+    }
+  ]
+}
