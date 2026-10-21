@@ -8,7 +8,7 @@ DEST="$ROOT/build"
 mkdir -p "$DEST/Signals.app/Contents/MacOS" "$DEST/bin"
 cp "$ROOT/mac/Info.plist" "$DEST/Signals.app/Contents/Info.plist"
 TARGET="$(uname -m)-apple-macosx14.0"
-xcrun swiftc -O -swift-version 5 -target "$TARGET" -o "$DEST/Signals.app/Contents/MacOS/NotificationWidget" \
+xcrun swiftc -O -parse-as-library -swift-version 5 -target "$TARGET" -o "$DEST/Signals.app/Contents/MacOS/NotificationWidget" \
   "$ROOT/mac/Sources/NotificationWidget.swift" -framework AppKit -framework SwiftUI -framework Combine
 xcrun swiftc -O -swift-version 5 -target "$TARGET" -o "$DEST/bin/widget-keychain" "$ROOT/mac/Helpers/Keychain.swift" -framework Security
 xcrun swiftc -O -swift-version 5 -target "$TARGET" -o "$DEST/bin/dock-badge" "$ROOT/mac/Helpers/DockBadge.swift" \
