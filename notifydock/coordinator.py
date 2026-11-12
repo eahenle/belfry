@@ -82,7 +82,10 @@ class Coordinator:
                 slot.rate_limit_until = prev.rate_limit_until
             if prev is None and ch.id in prior and ch.enabled:
                 old = prior[ch.id]
-                slot.min_refresh = max(0, min(86400, int(old.get("min_refresh_seconds") or 0)))
+                # Snapshot data is recoverable cache, not trusted configuration.
+                # Invalid polling metadata must not prevent every collector starting.
+                minimum = old.get("min_refresh_seconds")
+                slot.min_refresh = max(0, min(86400, minimum)) if type(minimum) is int else 0
                 try:
                     checked = datetime.fromisoformat((old.get("checked_at") or "").replace("Z", "+00:00"))
                     age = time.time() - checked.timestamp()
@@ -101,7 +104,7 @@ class Coordinator:
                     "observed_at": old.get("observed_at"),
                     "checked_at": old.get("checked_at"),
                     "last_success_at": old.get("last_success_at"),
-                    "min_refresh_seconds": old.get("min_refresh_seconds", 0)}
+                    "min_refresh_seconds": slot.min_refresh}
             else:
                 new_results[ch.id] = initial_result(ch)
         self.slots, self.channels, self.results = new_slots, channels, new_results
