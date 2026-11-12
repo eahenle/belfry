@@ -155,6 +155,27 @@ class SchedulerTests(unittest.TestCase):
         self.assertEqual(slot.min_refresh, 180)
         self.assertGreater(slot.next_due, self.clock()+150)
 
+    def test_restart_recovers_from_invalid_persisted_poll_interval(self):
+        c = self.setup_coordinator(['one'], lambda ch, keychain: Reading(4))
+        self.wait_done(c)
+        original = load_snapshot(self.snapshot)
+        for malformed in ('not-a-number', [180], {'value': 180}, float('inf'), True, 180.5):
+            with self.subTest(interval=malformed):
+                original['channels'][0]['min_refresh_seconds'] = malformed
+                self.snapshot.write_text(json.dumps(original))
+                restored = Coordinator(self.config, self.snapshot, self.refresh,
+                                       collector=lambda ch, keychain: Reading(9),
+                                       keychain=object(), clock=self.clock)
+                self.addCleanup(restored.close)
+                slot = next(iter(restored.slots.values()))
+                self.assertEqual(slot.min_refresh, 0)
+                row = load_snapshot(self.snapshot)['channels'][0]
+                self.assertEqual(row['count'], 4)
+                self.assertEqual(row['min_refresh_seconds'], 0)
+                restored.force_refresh()
+                self.wait_done(restored)
+                self.assertEqual(load_snapshot(self.snapshot)['channels'][0]['count'], 9)
+
     def test_sleep_wake_clock_translation(self):
         calls=[]
         def collect(ch,keychain):
