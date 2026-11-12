@@ -155,6 +155,38 @@ class SchedulerTests(unittest.TestCase):
         self.assertEqual(slot.min_refresh, 180)
         self.assertGreater(slot.next_due, self.clock()+150)
 
+    def test_restart_ignores_malformed_cached_channel_ids(self):
+        c = self.setup_coordinator(['one'], lambda ch, keychain: Reading(4))
+        self.wait_done(c)
+        original = load_snapshot(self.snapshot)
+        for malformed in ([], {}, None, 42, True):
+            with self.subTest(channel_id=malformed):
+                document = {**original, 'channels': [
+                    {'id': malformed}, original['channels'][0]]}
+                self.snapshot.write_text(json.dumps(document))
+                restored = Coordinator(self.config, self.snapshot, self.refresh,
+                                       collector=lambda ch, keychain: Reading(9),
+                                       keychain=object(), clock=self.clock)
+                self.addCleanup(restored.close)
+                self.assertEqual(next(iter(restored.results.values()))['count'], 4)
+                self.assertEqual(len(restored.results), 1)
+
+    def test_restart_recovers_from_non_string_cached_timestamp(self):
+        c = self.setup_coordinator(['one'], lambda ch, keychain: Reading(4))
+        self.wait_done(c)
+        original = load_snapshot(self.snapshot)
+        for malformed in (42, True, ['timestamp'], {'time': 'now'}):
+            with self.subTest(timestamp=malformed):
+                original['channels'][0]['checked_at'] = malformed
+                self.snapshot.write_text(json.dumps(original))
+                restored = Coordinator(self.config, self.snapshot, self.refresh,
+                                       collector=lambda ch, keychain: Reading(9),
+                                       keychain=object(), clock=self.clock)
+                self.addCleanup(restored.close)
+                self.assertEqual(next(iter(restored.results.values()))['count'], 4)
+                self.wait_done(restored)
+                self.assertEqual(next(iter(restored.results.values()))['count'], 9)
+
     def test_restart_recovers_from_invalid_persisted_poll_interval(self):
         c = self.setup_coordinator(['one'], lambda ch, keychain: Reading(4))
         self.wait_done(c)

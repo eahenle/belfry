@@ -67,7 +67,8 @@ class Coordinator:
             LOG.error("Configuration invalid; retaining last known valid configuration: %s", type(exc).__name__)
             return False
         original = load_snapshot(self.snapshot_path)
-        prior = {r["id"]: r for r in original["channels"] if isinstance(r, dict) and "id" in r}
+        prior = {r["id"]: r for r in original["channels"]
+                 if isinstance(r, dict) and isinstance(r.get("id"), str)}
         prior.update(self.results)
         new_slots: dict[str, Slot] = {}
         new_results: dict[str, dict] = {}
@@ -87,7 +88,9 @@ class Coordinator:
                 minimum = old.get("min_refresh_seconds")
                 slot.min_refresh = max(0, min(86400, minimum)) if type(minimum) is int else 0
                 try:
-                    checked = datetime.fromisoformat((old.get("checked_at") or "").replace("Z", "+00:00"))
+                    timestamp = old.get("checked_at")
+                    checked = datetime.fromisoformat(
+                        timestamp.replace("Z", "+00:00") if isinstance(timestamp, str) else "")
                     age = time.time() - checked.timestamp()
                     slot.next_due = self.clock() + max(0, max(ch.refresh_seconds, slot.min_refresh) - age)
                 except (ValueError, TypeError, OverflowError):
